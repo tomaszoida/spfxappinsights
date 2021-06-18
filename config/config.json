@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "spfxappinsights-application-customizer": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/spfxappinsights/SpfxappinsightsApplicationCustomizer.js",
+          "manifest": "./src/extensions/spfxappinsights/SpfxappinsightsApplicationCustomizer.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "SpfxappinsightsApplicationCustomizerStrings": "lib/extensions/spfxappinsights/loc/{locale}.js"
+  }
+}

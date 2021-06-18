@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+    <CustomAction
+        Title="SPFxAppInsights"
+        Location="ClientSideExtension.ApplicationCustomizer"
+        ClientSideComponentId="e6b6c2dc-802a-41fa-b8a0-dea69c7fb499"
+        ClientSideComponentProperties="{&quot;instrumentationKey&quot;:&quot;AppInsightsInstrumentationKey&quot;}">
+    </CustomAction>
+</Elements>
