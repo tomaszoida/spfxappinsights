@@ -2,7 +2,9 @@
 
 ## Summary
 
-Short summary on functionality and used technologies.
+SharePoint SPFx Web Analytics with Azure Application Insights.
+- [applicationinsights-web](https://www.npmjs.com/package/@microsoft/applicationinsights-web) - Application Insights SDK
+- [sppagecontextinfo](https://www.npmjs.com/package/sppagecontextinfo) - SPPageContextInfo helper
 
 [picture of the solution in action, if possible]
 
@@ -31,8 +33,7 @@ folder name | Author details (name, company, twitter alias with link)
 
 Version|Date|Comments
 -------|----|--------
-1.1|March 10, 2021|Update comment
-1.0|January 29, 2021|Initial release
+1.0|June, 2021|Initial release
 
 ## Disclaimer
 
