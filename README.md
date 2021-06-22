@@ -4,9 +4,23 @@
 
 SharePoint SPFx Web Analytics with Azure Application Insights.
 - [applicationinsights-web](https://www.npmjs.com/package/@microsoft/applicationinsights-web) - Application Insights SDK
-- [sppagecontextinfo](https://www.npmjs.com/package/sppagecontextinfo) - SPPageContextInfo helper
 
 [picture of the solution in action, if possible]
+
+## Usage
+### VSCode
+npm install
+npm run buildship
+npm run packageship
+
+### SharePoint
+Add sppkg to SharePoint App Catalog.
+Add an app to SharePoint Site.
+
+### PnP.PowerShell
+Connect-PnPOnline -Url https://???.sharepoint.com/
+$app = Get-PnPApplicationCustomizer |? Title -eq "SPFxAppInsights"
+Set-PnPApplicationCustomizer -Identity $app.Id -Scope Web -ClientSideComponentProperties '{"instrumentationKey":"ACTUAL INSTRUMENTATION KEY GUID"}'
 
 ## Used SharePoint Framework Version
 
@@ -18,10 +32,6 @@ SharePoint SPFx Web Analytics with Azure Application Insights.
 - [Microsoft 365 tenant](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
 
 > Get your own free development tenant by subscribing to [Microsoft 365 developer program](http://aka.ms/o365devprogram)
-
-## Prerequisites
-
-> Any special pre-requisites?
 
 ## Solution
 
