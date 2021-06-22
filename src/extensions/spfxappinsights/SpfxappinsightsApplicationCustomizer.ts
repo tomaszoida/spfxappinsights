@@ -4,7 +4,6 @@ import {
   BaseApplicationCustomizer
 } from '@microsoft/sp-application-base';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-import { SPPageContextInfo } from 'sppagecontextinfo';
 import * as strings from 'SpfxappinsightsApplicationCustomizerStrings';
 
 const LOG_SOURCE: string = 'SpfxappinsightsApplicationCustomizer';
@@ -30,24 +29,22 @@ export default class SpfxappinsightsApplicationCustomizer
   @override
   public onInit(): Promise<void> {
     this._instrumentationKey = this.properties.instrumentationKey;
-
     
     if (this._instrumentationKey && this._instrumentationKey != KeyDefaultValue) {
-      
+      this._appInsights = new ApplicationInsights({
+        config: {
+          instrumentationKey: this._instrumentationKey
+        }
+      });
+  
+      this._appInsights.loadAppInsights();      
       this.context.application.navigatedEvent.add(this, this.navigationEventHandler);      
     }
 
     return Promise.resolve();
   }
 
-  private _trackPageViewWithContext(context: any) {
-    this._appInsights = new ApplicationInsights({
-      config: {
-        instrumentationKey: this._instrumentationKey
-      }
-    });
-
-    this._appInsights.loadAppInsights();
+  private _trackPageViewWithContext(context: any) {    
     this._appInsights.trackPageView({
       properties: {
         "document.referrer": document.referrer,
@@ -64,13 +61,11 @@ export default class SpfxappinsightsApplicationCustomizer
         "sppagecontextinfo.siteAbsoluteUrl": context.siteAbsoluteUrl,
         "sppagecontextinfo.listTitle": context.listTitle,
         "snppagecontextinfo.isWebWelcomePage": context.isWebWelcomePage,
-      }
+      },
     });
   }
 
   private navigationEventHandler(): void{
-    SPPageContextInfo.getContext().then(context => {        
-      this._trackPageViewWithContext(context);
-    });
+    this._trackPageViewWithContext(this.context.pageContext.legacyPageContext);    
   }
 }
