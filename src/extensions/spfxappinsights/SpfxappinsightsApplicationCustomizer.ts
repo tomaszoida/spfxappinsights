@@ -30,7 +30,13 @@ export default class SpfxappinsightsApplicationCustomizer
   @override
   public onInit(): Promise<void> {
     this._instrumentationKey = this.properties.instrumentationKey;
+    this._appInsights = new ApplicationInsights({
+      config: {
+        instrumentationKey: this._instrumentationKey
+      }
+    });
 
+    this._appInsights.loadAppInsights();
     
     if (this._instrumentationKey && this._instrumentationKey != KeyDefaultValue) {
       
@@ -40,14 +46,7 @@ export default class SpfxappinsightsApplicationCustomizer
     return Promise.resolve();
   }
 
-  private _trackPageViewWithContext(context: any) {
-    this._appInsights = new ApplicationInsights({
-      config: {
-        instrumentationKey: this._instrumentationKey
-      }
-    });
-
-    this._appInsights.loadAppInsights();
+  private _trackPageViewWithContext(context: any) {    
     this._appInsights.trackPageView({
       properties: {
         "document.referrer": document.referrer,
