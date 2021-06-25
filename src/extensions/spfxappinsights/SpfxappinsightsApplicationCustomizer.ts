@@ -3,7 +3,7 @@ import { Log } from '@microsoft/sp-core-library';
 import {
   BaseApplicationCustomizer
 } from '@microsoft/sp-application-base';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { ApplicationInsights, IPageViewTelemetry } from '@microsoft/applicationinsights-web';
 import * as strings from 'SpfxappinsightsApplicationCustomizerStrings';
 
 const LOG_SOURCE: string = 'SpfxappinsightsApplicationCustomizer';
@@ -23,31 +23,37 @@ export interface ISpfxappinsightsApplicationCustomizerProperties {
 export default class SpfxappinsightsApplicationCustomizer
   extends BaseApplicationCustomizer<ISpfxappinsightsApplicationCustomizerProperties> {
 
-    private _instrumentationKey:string;
-    private _appInsights:ApplicationInsights;
-
+  private _instrumentationKey: string;
+  private _appInsights: ApplicationInsights;
+  private _startingPage: string;
   @override
   public onInit(): Promise<void> {
+    this._startingPage = window.location.href;
     this._instrumentationKey = this.properties.instrumentationKey;
-    
+
     if (this._instrumentationKey && this._instrumentationKey != KeyDefaultValue) {
       this._appInsights = new ApplicationInsights({
         config: {
           instrumentationKey: this._instrumentationKey
         }
       });
-  
-      this._appInsights.loadAppInsights();      
-      this.context.application.navigatedEvent.add(this, this.navigationEventHandler);      
+
+      this._appInsights.loadAppInsights();
+      this.context.application.navigatedEvent.add(this, this._navigationEventHandler);
     }
 
     return Promise.resolve();
   }
 
-  private _trackPageViewWithContext(context: any) {    
-    this._appInsights.trackPageView({
-      properties: {
-        "document.referrer": document.referrer,
+  private _navigationEventHandler(): void {
+    let isPartialReload = this._startingPage != window.location.href;
+    this._trackIntitialPageViewWithContext(this.context.pageContext.legacyPageContext, isPartialReload);
+  }
+
+  private _trackIntitialPageViewWithContext(context: any, isPartialReload: boolean) {
+
+    let properties: IPageViewTelemetry = {
+      properties: {        
         "sppagecontextinfo.currentCultureName": context.currentCultureName,
         "sppagecontextinfo.currentUICultureName": context.currentUICultureName,
         "sppagecontextinfo.isExternalGuestUser": context.isExternalGuestUser,
@@ -61,11 +67,15 @@ export default class SpfxappinsightsApplicationCustomizer
         "sppagecontextinfo.siteAbsoluteUrl": context.siteAbsoluteUrl,
         "sppagecontextinfo.listTitle": context.listTitle,
         "snppagecontextinfo.isWebWelcomePage": context.isWebWelcomePage,
-      },
-    });
-  }
+        "sharepoint.isPartialReload": isPartialReload,
+      }
+    };
 
-  private navigationEventHandler(): void{
-    this._trackPageViewWithContext(this.context.pageContext.legacyPageContext);    
+    if (isPartialReload) {
+      // TODO track partial reload performance
+      properties.properties.duration = 0;
+    }
+
+    this._appInsights.trackPageView(properties);
   }
 }
